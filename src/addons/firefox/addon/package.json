@@ -1,0 +1,16 @@
+{
+  "title": "Pocal",
+  "name": "pocal",
+  "version": "0.0.1",
+  "description": "Pocal Firefox Addon",
+  "main": "index.js",
+  "author": "",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jetpack"
+  ]
+}
