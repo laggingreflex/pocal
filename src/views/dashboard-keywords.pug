@@ -1,0 +1,10 @@
+form(method='post' action='/dashboard/keywords')
+  if (rules.length)
+    fieldset
+      legend Rules
+      each rule, i in rules
+        div #[input(name=i+'.keyword' value=rule.keyword)] does #[input(name=i+'.target' value=rule.target)]
+  fieldset
+    legend Add
+    div #[input(name=rules.length+'.keyword')] does #[input(name=rules.length+'.target')]
+  button Submit

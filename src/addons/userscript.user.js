@@ -16,7 +16,7 @@
   const proxyUrl = window.location.protocol + '//pocal.com:80/proxy';
   const rules = '--insert-rules--';
 
-  document.addEventListener('click', (event) => {
+  document.addEventListener('mousedown', (event) => {
     const leftClick = event.which === 1;
     const middleClick = event.which === 2;
 
@@ -28,7 +28,7 @@
 
     // event.preventDefault();
     const {target} = event;
-    const {href} = target;
+    const href = target.getAttribute('data-href-url') || target.href;
 
     if (!href) {
       return;
@@ -36,9 +36,14 @@
 
     console.log({href});
 
+    let newHref = href;
+
     rules.forEach((rule) => {
-      target.href = href.replace(new RegExp(rule.source), rule.target);
+      const source = new RegExp(rule.source);
+
+      newHref = newHref.replace(source, rule.target);
     });
+    target.href = newHref;
 
     if (target.href === '--proxy--') {
       const request = new XMLHttpRequest();

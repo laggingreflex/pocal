@@ -1,6 +1,7 @@
 import logi from 'debug-logi/create';
 import ms from 'ms';
 import padLeft from 'pad-left';
+import padRight from 'pad-right';
 import _ from 'lodash';
 import config from '../config';
 
@@ -11,9 +12,10 @@ export default async(ctx, next) => {
   ctx.log = reqLog;
 
   const id = padLeft(String(reqCounter++), 5, '0');
+  const method = padRight(ctx.method, 4, ' ');
 
   // eslint-disable-next-line no-restricted-syntax
-  const req = `[${id}] ${ctx.method} ${ctx.url} |`;
+  const req = `[${id}] ${method} ${ctx.url} |`;
 
   // console.log(_.pick(ctx, [
   //   'header',

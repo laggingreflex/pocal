@@ -27,4 +27,22 @@ router.all('/dashboard/client-url-replacer', async(ctx) => {
   ctx.body = render('dashboard-client-url-replacer.pug', {rules});
 });
 
+router.all('/dashboard/keywords', async(ctx) => {
+  let rules;
+
+  if (ctx.request.body && Object.entries(ctx.request.body).length) {
+    rules = _.map(ctx.request.body, (value) => {
+      return value;
+    }).filter((rule) => {
+      return rule.keyword && rule.target;
+    });
+    config.keywords = rules;
+    await config.save();
+  } else {
+    rules = config.keywords;
+  }
+  rules = rules || [];
+  ctx.body = render('dashboard-keywords.pug', {rules});
+});
+
 export default router.routes();

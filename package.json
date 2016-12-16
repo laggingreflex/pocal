@@ -33,6 +33,7 @@
     "ms": "^0.7.2",
     "ority": "^0.2.2",
     "pad-left": "^2.1.0",
+    "pad-right": "^0.2.2",
     "pem-promise": "^1.0.0",
     "portscanner": "^2.1.1",
     "prompt-confirm": "^0.2.1",
