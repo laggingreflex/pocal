@@ -41,9 +41,7 @@
     "stream-from-promise": "^1.0.0",
     "string-to-stream": "^1.1.0",
     "yargs": "^5.0.0",
-    "pem": "^1.9.4",
-    "pem-promise": "^1.0.0",
-    "httpolyglot": "^0.1.2"
+    "pem": "^1.9.4"
   },
   "optionalDependencies": {
     "jpm": "^1.2.2"

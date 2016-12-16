@@ -24,7 +24,7 @@
     "fs-promise": "^1.0.0",
     "koa": "^2.0.0-alpha.7",
     "koa-convert": "^1.2.0",
-    "koa-body": "^2.0.0",
+    "koa-better-body": "^3.0.2",
     "koa-bunyan-logger": "^2.0.0-pre1",
     "koa-router": "^7.0.1",
     "lodash": "^4.17.2",
@@ -40,10 +40,7 @@
     "source-map-support": "^0.4.5",
     "stream-from-promise": "^1.0.0",
     "string-to-stream": "^1.1.0",
-    "yargs": "^5.0.0",
-    "pem": "^1.9.4",
-    "pem-promise": "^1.0.0",
-    "httpolyglot": "^0.1.2"
+    "yargs": "^5.0.0"
   },
   "optionalDependencies": {
     "jpm": "^1.2.2"

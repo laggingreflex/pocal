@@ -3,16 +3,18 @@
 // @namespace     pocal
 // @description   pocal
 // @author        pocal
-// @homepage      http://pocal.com:80/
+// @homepage      https://pocal.com:80/
 // @include       *
 // @version       0.0.1
 // @run-at        document-start
-// @downloadURL   http://pocal.com:80/addons/userscript.user.js
+// @grant         none
+// @downloadURL   https://pocal.com:80/addons/userscript.user.js
 // ==/UserScript==
 /* eslint-disable import/unambiguous, filenames/match-regex, promise/prefer-await-to-then, no-console */
 
 (() => {
-  const host = 'http://pocal.com:80/proxy';
+  const host = 'https://pocal.com:80/proxy';
+  const rules = '--insert-rules--';
 
   document.addEventListener('click', (event) => {
     const leftClick = event.which === 1;
@@ -34,22 +36,10 @@
 
     console.log({href});
 
-    if (href.match(/youtube.com|youtu.be/)) {
-      const match = href.match(/youtube\.com\/watch\?v=([a-zA-Z0-9-_]+)/) || href.match(/youtu\.be\/([a-zA-Z0-9-_]+)/);
-
-      if (match) {
-        const [, id] = match;
-
-        target.href = 'https://www.youtube.com/tv#/watch?v=' + id;
-
-        return;
-      } else {
-        event.preventDefault();
-        alert('weird youtube link');
-
-        return;
-      }
-    }
+    rules.forEach((rule) => {
+      target.href = href.replace(new RegExp(rule.source), rule.target);
+      console.log({rule: new RegExp(rule.source), target: target.href});
+    });
 
     if (/* needs server intervention */ false) {
       event.preventDefault();

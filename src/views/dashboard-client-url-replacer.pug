@@ -1,0 +1,10 @@
+form(method='post' action='/dashboard/client-url-replacer')
+  if (rules.length)
+    fieldset
+      legend Rules
+      each rule, i in rules
+        div Replace #[input(name=i+'.source' value=rule.source)] with #[input(name=i+'.target' value=rule.target)]
+  fieldset
+    legend Add
+    div Replace #[input(name=rules.length+'.source')] with #[input(name=rules.length+'.target')]
+  button Submit

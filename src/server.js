@@ -1,5 +1,8 @@
+// import https from 'httpolyglot';
 import Koa from 'koa';
 import portscanner from 'portscanner';
+import body from 'koa-body';
+import pem from 'pem-promise';
 import config from './config';
 import {log, reqLog, getHostString} from './utils';
 import * as routes from './routes'; // eslint-disable-line
@@ -7,6 +10,7 @@ import * as routes from './routes'; // eslint-disable-line
 const app = new Koa();
 
 app.use(reqLog);
+app.use(body());
 for (const [, route] of Object.entries(routes)) {
   app.use(route);
 }
@@ -34,7 +38,26 @@ export default async({
     }
   }
 
-  return app.listen(port, ip, () => {
+  if (!config.sslKey || !config.sslCert) {
+    const {serviceKey, certificate} = await pem.createCertificate({selfSigned: true});
+
+    config.sslKey = serviceKey;
+    config.sslCert = certificate;
+    await config.save();
+  }
+
+  // https.createServer({
+  //   cert: config.sslCert,
+  //   key: config.sslKey
+  // }, app.callback()).listen(port, ip, () => {
+  //   if (!silent) {
+  //     log('Listening on', getHostString(port, ip));
+  //   }
+  //   listeningHost.ip = ip;
+  //   listeningHost.port = port;
+  // });
+
+  app.listen(port, ip, () => {
     if (!silent) {
       log('Listening on', getHostString(port, ip));
     }
