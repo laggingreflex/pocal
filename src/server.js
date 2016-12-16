@@ -1,25 +1,50 @@
-import Koa from 'koa'
-import portscanner from 'portscanner'
-import { log, koaLogger } from './utils'
-import * as routes from './routes'
+import Koa from 'koa';
+import portscanner from 'portscanner';
+import config from './config';
+import {log, reqLog, getHostString} from './utils';
+import * as routes from './routes'; // eslint-disable-line
 
-const app = new Koa()
+const app = new Koa();
 
-app.use(koaLogger)
+app.use(reqLog);
+for (const [, route] of Object.entries(routes)) {
+  app.use(route);
+}
 
-for (const k in routes) {
-  const route = routes[k]
-  if (typeof route === 'function') {
-    app.use(route)
+const defaultIp = config.ip || '127.0.0.1';
+const defaultPort = config.port || 6000;
+
+const listeningHost = {};
+
+export default async({
+  silent = config.silent,
+  ip = defaultIp,
+  port: argPort
+} = {}) => {
+  let port = argPort || defaultPort;
+
+  const portStatus = await portscanner.checkPortStatus(port, ip);
+
+  if (portStatus !== 'closed') {
+    if (argPort) {
+      throw new Error(`Cannot listen on ${ip}:${port}`); // eslint-disable-line
+    } else {
+      if (!silent) log.warn(`Warning: ${ip}:${port} is busy`); // eslint-disable-line
+      port = await portscanner.findAPortNotInUse(6000, 6010, ip);
+    }
   }
-}
 
-export default async function createServer () {
-  const port = await portscanner.findAPortNotInUse(3000, 3010)
-  console.log('even?')
-  return app.listen(port, () => log(`Listening on port ${port}`))
-}
+  return app.listen(port, ip, () => {
+    if (!silent) {
+      log('Listening on', getHostString(port, ip));
+    }
+    listeningHost.ip = ip;
+    listeningHost.port = port;
+  });
+};
 
-async function foo () {
-  console.log('even?')
-}
+export const getListeningHost = () => {
+  const {port, ip} = listeningHost;
+
+  return getHostString(port, ip);
+};

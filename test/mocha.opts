@@ -2,13 +2,12 @@
 --compilers js:babel-register
 --require source-map-support/register
 --require require-up/register
---require tests/_/first.js
+--require test/index.js
 --cache-dir coverage/.cache
+--report lcov
 --reporter spec
-# -vvv
 --debug
-src/**/test/*.js
-src/**/*.test.js
-tests/**/*.js
-!tests/_/**
-!tests/fixtures/**
+--bail
+--all
+--watch
+# -vvv

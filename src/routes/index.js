@@ -1,12 +1,9 @@
+/* eslint-disable */
+
 // @create-index
 
-import _addonFirefox from './addonFirefox.js'
-export const addonFirefox = _addonFirefox
+export addons from './addons.js';
+export home from './home.js';
+export proxy from './proxy.js';
+export search from './search.js';
 
-import _home from './home.js'
-export const home = _home
-
-export default {
-  addonFirefox,
-  home
-}

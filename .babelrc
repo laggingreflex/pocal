@@ -4,7 +4,7 @@
     "stage-0"
   ],
   "plugins": [["annotate-console-log", {"scriptPath": true}]],
-  "sourceMaps": true,
+  "sourceMaps": "inline",
   "env": {
     "test": { "plugins": [ "rewire" ] }
   }

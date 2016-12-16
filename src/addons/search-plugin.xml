@@ -1,0 +1,8 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Pocal Search</ShortName>
+  <Description>Pocal Web Search</Description>
+  <Url type="text/html" template="http://pocal.com:80/search">
+    <Param name="query" value="{searchTerms}"/>
+  </Url>
+  <Url rel="self" type="application/opensearchdescription+xml" template="http://pocal.com:80/addons/search-plugin.xml" />
+</OpenSearchDescription>

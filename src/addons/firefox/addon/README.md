@@ -1,2 +1,0 @@
-#Pocal
-Pocal Firefox Addon

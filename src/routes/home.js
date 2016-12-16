@@ -1,9 +1,10 @@
-import Router from 'koa-router'
+import Router from 'koa-router';
+import render from '../views';
 
-const router = new Router()
+const router = new Router();
 
-router.get('/', async (ctx) => {
-  ctx.body = 'Welcome!'
-})
+router.get('/', (ctx) => {
+  ctx.body = render('home.pug');
+});
 
-export default router.routes()
+export default router.routes();
