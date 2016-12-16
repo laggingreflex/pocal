@@ -7,7 +7,6 @@ export default async(filename) => {
   const file = await fs.readFile(path.join(__dirname, filename), 'utf8');
 
   return file
-    .replace(new RegExp('pocal.com:80', 'gi'), config.host || getListeningHost());
-
-    // .replace('\'--insert-rules--\'', JSON.stringify(config.clientUrlReplace || []));
+    .replace(new RegExp('pocal.com:80', 'gi'), config.host || getListeningHost())
+    .replace('\'--insert-rules--\'', JSON.stringify(config.clientUrlReplace || []));
 };

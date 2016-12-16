@@ -1,4 +1,4 @@
-// import https from 'httpolyglot';
+import https from 'httpolyglot';
 import Koa from 'koa';
 import portscanner from 'portscanner';
 import body from 'koa-body';
@@ -46,18 +46,10 @@ export default async({
     await config.save();
   }
 
-  // https.createServer({
-  //   cert: config.sslCert,
-  //   key: config.sslKey
-  // }, app.callback()).listen(port, ip, () => {
-  //   if (!silent) {
-  //     log('Listening on', getHostString(port, ip));
-  //   }
-  //   listeningHost.ip = ip;
-  //   listeningHost.port = port;
-  // });
-
-  app.listen(port, ip, () => {
+  https.createServer({
+    cert: config.sslCert,
+    key: config.sslKey
+  }, app.callback()).listen(port, ip, () => {
     if (!silent) {
       log('Listening on', getHostString(port, ip));
     }
