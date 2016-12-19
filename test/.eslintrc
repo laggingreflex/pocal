@@ -1,1 +1,1 @@
-{ "extends": "canonical/mocha" }
+{ "extends": ["canonical/mocha", "relaxed"] }

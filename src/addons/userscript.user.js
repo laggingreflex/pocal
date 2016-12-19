@@ -45,7 +45,7 @@
     });
     target.href = newHref;
 
-    if (target.href === '--proxy--') {
+    if (target.href === '--proxy--sync--') {
       const request = new XMLHttpRequest();
 
       console.log({proxyUrl});
@@ -56,6 +56,16 @@
 
       console.log({responseText: request.responseText});
       target.href = request.responseText;
+    }
+    if (target.href === '--proxy--async--') {
+      event.preventDefault();
+      const request = new XMLHttpRequest();
+
+      console.log({proxyUrl});
+
+      // asynchronous
+      request.open('POST', proxyUrl, true);
+      request.send(JSON.stringify({href}));
     }
   });
   console.log('Pocal userscript loaded');

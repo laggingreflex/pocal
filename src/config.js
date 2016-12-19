@@ -2,38 +2,48 @@ import Config from 'configucius';
 
 const config = new Config({
   configFile: '~/.pocal',
-  duplicateArgumentsArray: false,
-  mergeDefaults: true,
   options: {
     clientUrlReplace: {
       default: [],
-      save: true
-    },
-    host: {
       save: true,
-      type: 'string'
-    },
-    ip: {
-      save: true,
-      type: 'string'
     },
     keywords: {
       default: [],
-      save: true
+      save: true,
+    },
+    plugins: {
+      type: 'array',
+      default: ['youtube'],
+      save: true,
+    },
+    youtubeDownloadsDir: {
+      type: 'string',
+      default: '~/videos/downloads',
+      save: true,
+    },
+    host: {
+      type: 'string',
+      save: true,
     },
     port: {
+      type: 'number',
       save: true,
-      type: 'number'
     },
-    sslCert: {
+    ip: {
+      type: 'string',
       save: true,
-      type: 'string'
     },
     sslKey: {
+      type: 'string',
       save: true,
-      type: 'string'
-    }
-  }
+    },
+    sslCert: {
+      type: 'string',
+      save: true,
+    },
+  },
+  duplicateArgumentsArray: false,
+  mergeDefaults: true,
 });
 
 export default config;

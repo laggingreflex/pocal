@@ -1,35 +1,46 @@
 import Router from 'koa-router';
 import render from '../views';
 import config from '../config';
+import { loadPlugins } from '../utils';
 
 const router = new Router();
 
-router.get('/search', (ctx) => {
-  const query = ctx.query.q || ctx.query.query;
+router.get('/search', async(ctx) => {
+  const fullQuery = ctx.query.q || ctx.query.query;
 
-  if (!query) {
+  if (!fullQuery) {
     ctx.body = render('search.pug');
 
     return;
   }
 
-  const [searchKeyword, ...searchTerms] = query.split(/[\s]+/);
-
   for (const rule of config.keywords) {
-    if (rule.keyword === searchKeyword) {
-      if (rule.target === '--proxy--') {
-
+    if (fullQuery.startsWith(rule.keyword + ' ')) {
+      const [, query] = fullQuery.split(rule.keyword).map(s => s.trim());
+      if (rule.target.includes('--plugin--')) {
+        const [, plugin] = rule.target.match(/--plugin--(.*)/);
+        const pluginFn = loadPlugins(plugin);
+        try {
+          let appliedTarget = pluginFn(query, ctx);
+          if (appliedTarget.then) {
+            appliedTarget = await appliedTarget;
+          }
+          if (appliedTarget) {
+            ctx.redirect(appliedTarget);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        return;
+      } else {
+        const appliedTarget = rule.target.replace('{searchTerms}', query);
+        ctx.redirect(appliedTarget);
+        return;
       }
-
-      const appliedTarget = rule.target.replace('{searchTerms}', searchTerms);
-
-      ctx.redirect(appliedTarget);
-
-      return;
     }
   }
 
-  ctx.redirect('http://google.com/search?q=' + query);
+  ctx.redirect('http://google.com/search?q=' + encodeURIComponent(fullQuery));
 });
 
 export default router.routes();

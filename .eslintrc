@@ -1,1 +1,1 @@
-{ "extends": "canonical" }
+{ "extends": ["canonical", "relaxed"] }
