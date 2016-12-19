@@ -1,14 +1,19 @@
 import path from 'path';
 import http from 'http';
+import https from 'https';
 import fs from 'fs-promise';
 import untildify from 'untildify';
-import { promisify } from 'bluebird';
+import { promisify, promisifyAll } from 'bluebird';
 import prettyBytes from 'pretty-bytes';
-import ytdl from 'youtube-dl';
+import youtube from 'youtube-dl';
 import linkify from 'linkifyjs/html';
 import config from '../config';
 
-const ytdlVer = promisify(ytdl.exec)('--version', [], {}).then(o => o.join(''));
+promisifyAll(youtube);
+
+// promisifyAll(http);
+
+const ver = youtube.execAsync('--version', [], {}).then(o => o.join(''));
 
 export default (linkArg, ctx) => {
   // fix youtube/tv
@@ -16,11 +21,15 @@ export default (linkArg, ctx) => {
   // https://github.com/regexhq/youtube-regex/issues/7
   // Doesn't work: https://www.youtube.com/tv#/watch/video/idle?v=oNXzMBA9VU4&resume
   // Doesn't work: https://www.youtube.com/tv#/watch/video/idle?v=oNXzMBA9VU4
+  // Doesn't work: https://www.youtube.com/tv#/watch/video/seek?v=oNXzMBA9VU4
+  // Doesn't work: https://www.youtube.com/tv#/watch/video/control?v=oNXzMBA9VU4
   // Doesn't work: https://www.youtube.com/tv#/watch/video?v=oNXzMBA9VU4
   // Work        : https://www.youtube.com/tv#/watch?v=oNXzMBA9VU4
 
   const link = linkArg
     .replace('watch/video/idle?v', 'watch?v')
+    .replace('watch/video/seek?v', 'watch?v')
+    .replace('watch/video/control?v', 'watch?v')
     .replace('watch/video?v', 'watch?v')
     .replace('&resume', '');
 
@@ -33,20 +42,22 @@ export default (linkArg, ctx) => {
     ctx.status = 200;
 
     // ctx.type = 'text';
-    ctx.set('Connection', 'Transfer-Encoding');
+    ctx.set('Connection', 'Transfer-Encoding; keep-alive');
     ctx.set('Content-Type', 'text/html; charset=utf-8');
     ctx.set('Transfer-Encoding', 'chunked');
     ctx.set('X-Content-Type-Options', 'nosniff');
 
     writeHref(link);
     writeCode('Fetching...');
+    ctx.res.flushHeaders();
 
+    // const video = youtube(link, [], { cwd, maxBuffer: Infinity });
     let video;
     try {
-      video = await promisify(ytdl.getInfo)(link, []);
+      video = await youtube.getInfoAsync(link, [], { cwd, maxBuffer: Infinity });
     } catch (err) {
       writeCode(linkify(err.message));
-      writeCode(`'youtube-dl --version' = ${await ytdlVer}`);
+      writeCode(`'youtube-dl --version' = ${await ver}`);
       end();
       reject(err);
       return;
@@ -54,123 +65,79 @@ export default (linkArg, ctx) => {
 
     const filename = video._filename;
     writeCode('Filename: ' + filename);
-    writeCode('Size: ' + prettyBytes(video.size));
-    writeCode('Downloading...');
-
-    const req = promisify(http.get)(video.url);
-
-    req.on('error', err => {
-      end(err.message);
-      reject(err);
-    });
-
-    const res = await req;
 
     const filepath = path.join(cwd, filename);
     const tempFilepath = path.join(cwdTmp, filename);
-
     try {
       await fs.access(filepath, fs.constants.F_OK);
       writeCode('Error: File already exists');
       writeFilepath();
       end();
       resolve();
-    } catch (error) {
-      try {
-        await fs.access(tempFilepath, fs.constants.F_OK);
-        writeCode('Warning Temp File already exists. Removing...');
-        await fs.remove(tempFilepath);
-      } catch (error) {}
-      writeCode('Writing to file...');
-      res.pipe(fs.createWriteStream(tempFilepath));
-    }
+      return;
+    } catch (error) {}
+    try {
+      await fs.access(tempFilepath, fs.constants.F_OK);
+      writeCode('Warning Temp File already exists. Removing...');
+      await fs.remove(tempFilepath);
+    } catch (error) {}
 
-    // video.on('info', async(info) => {
-    //   filename = info._filename;
-    //   writeCode('Filename: ' + filename);
-    //   writeCode('Size: ' + prettyBytes(info.size));
-    //   writeCode('Downloading...');
-    //   ctx.res.flushHeaders();
-    //   filepath = path.join(cwd, filename);
-    //   tempFilepath = path.join(cwdTmp, filename);
-    //   try {
-    //     await fs.access(filepath, fs.constants.F_OK);
-    //     writeCode('Error: File already exists');
-    //     writeFilepath();
-    //     end();
-    //     resolve();
-    //   } catch (error) {
-    //     try {
-    //       await fs.access(tempFilepath, fs.constants.F_OK);
-    //       writeCode('Warning Temp File already exists. Removing...');
-    //       await fs.remove(tempFilepath);
-    //     } catch (error) {}
-    //     writeCode('Writing to file...');
-    //     video.pipe(fs.createWriteStream(tempFilepath));
-    //   }
-    // });
+    writeCode('Downloading...');
 
-    res.on('end', async () => {
-      writeCode('Finished downloading!');
-      try {
-        try {
-          writeCode('Moving out from .tmp dir...');
-          await fs.rename(tempFilepath, filepath);
-        } catch (err) {
-          writeCode('Rename failed, actually moving now...');
-          await fs.move(tempFilepath, filepath);
-        }
-      } catch (err) {
-        end(err.message);
-        reject(err);
-      }
-      write(`<textarea rows=1 cols=${filepath.length + 10} onClick='this.select()'>${filepath}</textarea>`);
-      end();
-      resolve();
+    // const downloadUrl = video.url.replace()
+
+    let req;
+    const method = video.url.includes('https') ? https : http;
+    const res = await new Promise((resolve) => {
+      req = method.get(video.url, resolve);
+    });
+    req.on('error', err => {
+      writeCode('Couldn\'t download file ' + linkify(video.url) + ' ' + err.message);
+      reject(err);
     });
 
-    // video.on('complete', (info) => {
-    //   writeCode('Filename: ' + info._filename + ' already downloaded.');
-    //   ctx.res.end('');
-    //   resolve();
-    // });
+    const filesize = parseInt(res.headers['content-length'], 10);
+    writeCode('Size: ' + prettyBytes(filesize));
 
-    // video.on('end', async() => {
-    //   writeCode('Finished downloading!');
-    //   try {
-    //     try {
-    //       writeCode('Moving out from .tmp dir...');
-    //       await fs.rename(tempFilepath, filepath);
-    //     } catch (err) {
-    //       writeCode('Rename failed, actually moving now...');
-    //       await fs.move(tempFilepath, filepath);
-    //     }
-    //   } catch (err) {
-    //     end(err.message);
-    //     reject(err);
-    //   }
-    //   write(`<textarea rows=1 cols=${filepath.length + 10} onClick='this.select()'>${filepath}</textarea>`);
-    //   end();
-    //   resolve();
-    // });
+    writeCode('Writing to file...');
 
-    // video.on('error', async(error) => {
-    //   // writeCode(error.message.replace('https://yt-dl.org/bug', '</code><a href=\'https://yt-dl.org/bug\'><code>https://yt-dl.org/bug</code></a><code>'));
-    //   writeCode(linkify(error.message));
-    //   writeCode(`'youtube-dl --version' = ${await ytdlVer}`);
-    //   // write(errorMessage);
-    //   end();
-    //   reject();
-    // });
+    res.pipe(fs.createWriteStream(tempFilepath));
+
+    let dlSize = 0;
+    let percent = 0;
+    res.on('data', ({ length }) => {
+      dlSize += length;
+      if (dlSize > filesize * (percent / 100)) {
+        writeCode(`${percent++}%…`, false);
+      }
+    });
+
+    await promisify(::res.on)('end');
+
+    writeCode('Finished downloading!');
+    try {
+      try {
+        writeCode('Moving out from .tmp dir...');
+        await fs.rename(tempFilepath, filepath);
+      } catch (err) {
+        writeCode('Rename failed, actually moving now...');
+        await fs.move(tempFilepath, filepath);
+      }
+    } catch (err) {
+      end(err.message);
+      reject(err);
+    }
+    write(`<textarea rows=1 cols=${filepath.length + 10} onClick='this.select()'>${filepath}</textarea>`);
+    end();
+    resolve();
 
     function writeFilepath() {
       write(`<textarea rows=1 cols=${filepath.length + 10} onClick='this.select()'>${filepath}</textarea>`);
     }
   });
 
-  function write(str) {
-    ctx.res.write(str + '\n');
-    ctx.res.flushHeaders();
+  function write(str, br = '\n') {
+    ctx.res.write(str + br);
   }
 
   function end(str) {
@@ -181,11 +148,15 @@ export default (linkArg, ctx) => {
     write('<div>' + str + '</div>');
   }
 
-  function writeCode(str) {
-    writeDiv('<code>' + str + '</code>');
+  function writeCode(str, br = true) {
+    if (br) {
+      writeDiv('<code>' + str + '</code>');
+    } else {
+      write('<code>' + str + '</code>');
+    }
   }
 
   function writeHref(url, str) {
-    write(`<a href='${url}'>${str || url}</a>`);
+    ctx.res.write(`<a href='${url}'>${str || url}</a>`);
   }
 };
