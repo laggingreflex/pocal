@@ -27,10 +27,10 @@ export default (plugins) => {
 
 function requireModule(request) {
   const list = [
-    request,
     path.join(__dirname, '../plugins', request),
     untildify(path.join('~/.pocal', request)),
     untildify(path.join('~/.pocal/node_modules', request)),
+    request,
   ];
   const found = requireOneFromList(list);
   if (found) {

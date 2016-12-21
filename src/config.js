@@ -13,7 +13,7 @@ const config = new Config({
     },
     plugins: {
       type: 'array',
-      default: ['youtube'],
+      default: ['youtube-dl'],
       save: true,
     },
     youtubeDownloadsDir: {

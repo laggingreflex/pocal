@@ -1,5 +1,5 @@
 import logi from 'debug-logi/create';
-import ms from 'ms';
+import ms from 'pretty-ms';
 import padLeft from 'pad-left';
 import padRight from 'pad-right';
 import _ from 'lodash';
@@ -9,7 +9,7 @@ const reqLog = logi('req', config);
 let reqCounter = 0;
 
 export default async(ctx, next) => {
-  ctx.log = reqLog;
+  const log = ctx.log = reqLog;
 
   const id = padLeft(String(reqCounter++), 5, '0');
   const method = padRight(ctx.method, 4, ' ');
@@ -41,7 +41,7 @@ export default async(ctx, next) => {
   // );
 
   const timeout = setTimeout(() => {
-    ctx.log.verb(req, 'Waiting...');
+    log.verb(req, 'Waiting...');
   }, 1000);
 
   const startTime = new Date();
@@ -53,14 +53,19 @@ export default async(ctx, next) => {
     endTime = new Date();
   } catch (err) {
     endTime = new Date();
-    if (config.debug) {
-      ctx.log.err(err);
-      ctx.body = err.stack;
+    const errMsg = config.debug ? err : err.message;
+    const reqMsg = config.debug ? err.stack : 'Something went wrong. ' + err.message;
+    log.err(req, errMsg);
+    if (ctx.headerSent) {
+      ctx.res.end('\n' + reqMsg);
     } else {
-      ctx.log.err(err.message);
-      ctx.body = 'Something went wrong. ' + err.message;
+      ctx.type = 'text';
+      ctx.body = reqMsg;
+    }
+    if (ctx.info) {
+      // log(ctx.info);
     }
   }
   clearTimeout(timeout);
-  ctx.log(req, 'Finished in', ms(endTime - startTime));
+  log(req, 'Finished in', ms(endTime - startTime));
 };
