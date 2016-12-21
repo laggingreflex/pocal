@@ -2,6 +2,12 @@
 
 Lets you control what happens when you click a link or search.
 
+* Features (see below)
+* [Technical details](docs/what-is.md)
+* [Installation](install.md)
+* [Basic setup](docs/basic-setup.md)
+* [Creating a plugin](docs/creating-plugins.md)
+
 ## Feature #1: Client URL replacer
 
 Specify a rule to replace the clicked URL into something else.
