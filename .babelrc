@@ -3,7 +3,7 @@
     "es2015-node6/object-rest",
     "stage-0"
   ],
-  "plugins": [["annotate-console-log", {"scriptPath": true}]],
+  // "plugins": [["annotate-console-log", {"scriptPath": "relative"}]],
   "sourceMaps": "inline",
   "env": {
     "test": { "plugins": [ "rewire" ] }

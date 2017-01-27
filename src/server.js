@@ -4,13 +4,17 @@ import portscanner from 'portscanner';
 import body from 'koa-body';
 import pem from 'pem-promise';
 import config from './config';
-import {log, reqLog, getHostString} from './utils';
+import { log, reqLog, getHostString } from './utils';
 import * as routes from './routes'; // eslint-disable-line
 
 const app = new Koa();
 
 app.use(reqLog);
 app.use(body());
+app.use((ctx, next) => {
+  ctx.set('Access-Control-Allow-Origin', '*');
+  return next();
+});
 for (const [, route] of Object.entries(routes)) {
   app.use(route);
 }
@@ -39,7 +43,7 @@ export default async({
   }
 
   if (!config.sslKey || !config.sslCert) {
-    const {serviceKey, certificate} = await pem.createCertificate({selfSigned: true});
+    const { serviceKey, certificate } = await pem.createCertificate({ selfSigned: true });
 
     config.sslKey = serviceKey;
     config.sslCert = certificate;
@@ -56,10 +60,18 @@ export default async({
     listeningHost.ip = ip;
     listeningHost.port = port;
   });
+  https.createServer({
+    cert: config.sslCert,
+    key: config.sslKey
+  }, app.callback()).listen(443, ip, () => {
+    if (!silent) {
+      log('Listening on', getHostString(443, ip));
+    }
+  });
 };
 
 export const getListeningHost = () => {
-  const {port, ip} = listeningHost;
+  const { port, ip } = listeningHost;
 
   return getHostString(port, ip);
 };

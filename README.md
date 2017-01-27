@@ -1,6 +1,6 @@
 # pocal
 
-Lets you control what happens when you click a link or search.
+Lets you control what happens when you search or click a link.
 
 * Features (see below)
 * [Technical details](docs/what-is.md)

@@ -10,6 +10,8 @@ router.get('/dashboard', (ctx) => {
 });
 
 router.all('/dashboard/client-url-replacer', async(ctx) => {
+  config.readConfigFile();
+
   let rules;
 
   if (ctx.request.body && Object.entries(ctx.request.body).length) {
@@ -28,6 +30,8 @@ router.all('/dashboard/client-url-replacer', async(ctx) => {
 });
 
 router.all('/dashboard/keywords', async(ctx) => {
+  config.readConfigFile();
+
   let rules;
 
   if (ctx.request.body && Object.entries(ctx.request.body).length) {

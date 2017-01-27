@@ -52,7 +52,7 @@ export default async(linkArg, ctx) => {
   ctx.set('X-Content-Type-Options', 'nosniff');
 
   write(code(href(link)));
-  write(code('Fetching...'));
+  write(code('Fetching download URL...'));
   ctx.res.flushHeaders();
 
   // const video = youtube(link, [], { cwd, maxBuffer: Infinity });
@@ -81,7 +81,6 @@ export default async(linkArg, ctx) => {
     filename = link
       .replace(/https?\:[\/]+/, '')
       .replace('www.', '')
-
     // .replace(/\./g, '')
     ;
   }
@@ -135,11 +134,12 @@ export default async(linkArg, ctx) => {
     res = await download(downloadUrl);
   }
 
-  const filesize = parseInt(res.headers['content-length'], 10);
-  if (!filesize) {
-    throw new Error('0 filesize, please try again, or maybe the URL isn\'t supported');
-  }
-  write(code('Size: ' + prettyBytes(filesize)));
+  // const filesize = parseInt(res.headers['content-length'], 10);
+  // if (!filesize) {
+  //   throw new Error('0 filesize, please try again, or maybe the URL isn\'t supported');
+  // }
+  // write(code('Size: ' + prettyBytes(filesize)));
+  // write(code('res.headers:' + JSON.stringify(res.headers)));
 
   write(code('Writing to file...'));
 
@@ -214,6 +214,8 @@ export default async(linkArg, ctx) => {
 
   async function download(downloadUrl, opts = {}) {
     write(code('Downloading...'));
+    write(code(href(downloadUrl)));
+    // write(code(JSON.stringify(opts)));
 
     let req;
     const res = await new Promise((resolve, reject) => {
@@ -224,19 +226,33 @@ export default async(linkArg, ctx) => {
           ...opts.headers
         },
       });
-      progress(req).on('progress', (state) => {
+      const res = progress(req).on('progress', (state) => {
         let str = '';
         state.percent *= 100;
         str += `${state.percent.toFixed(state.percent > 10 ? 0 : 1)}%`;
         if (state.time && state.time.remaining && state.time.remaining > 1) {
           str += ` | ${ms(state.time.remaining * 1000, {compact: true})}`;
         }
+        if (state.size) {
+          str += ' | ';
+          if (state.size.transferred) {
+            str += `${prettyBytes(state.size.transferred).replace(/\.[0-9]+/, '').replace(/\s/g, '')} of `;
+          }
+          if (state.size.total) {
+            str += `${prettyBytes(state.size.total).replace(/\.[0-9]+/, '').replace(/\s/g, '')}`;
+          }
+        }
         if (state.speed) {
           str += ` | ${prettyBytes(state.speed || 0).replace(/\.[0-9]+/, '').replace(/\s/g, '')}/s`;
         }
         write(progressScript(str));
       });
-      req.once('response', resolve);
+      resolve(res);
+      // req.once('response', resolve);
+      // req.once('response', _res => {
+      //   _res.res = res;
+      //   resolve(_res);
+      // });
       req.once('error', err => {
         write(code('Couldn\'t download file ' + linkify(downloadUrl) + ' ' + err.message));
         reject(err);

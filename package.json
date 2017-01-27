@@ -18,7 +18,7 @@
     "bunyan": "^1.8.5",
     "child-process-es6-promise": "^1.1.0",
     "client-request": "^1.2.0",
-    "configucious": "^0.1.0",
+    "configucius": "^0.1.0",
     "debug-logi": "^0.0.1",
     "enquirer": "^0.4.1",
     "find": "^0.2.7",

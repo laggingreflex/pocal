@@ -7,7 +7,7 @@ const main = async() => {
   if (config.get('editConfig')) {
     await config.prompt();
     config.save();
-    console.log('Config saved');
+    // console.log('Config saved');
     return;
   }
 

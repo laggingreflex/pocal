@@ -10,3 +10,4 @@ export default async(filename) => {
     .replace(new RegExp('pocal.com:80', 'gi'), config.host || getListeningHost())
     .replace('\'--insert-rules--\'', JSON.stringify(config.clientUrlReplace || []));
 };
+

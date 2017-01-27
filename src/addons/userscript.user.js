@@ -13,60 +13,84 @@
 /* eslint-disable import/unambiguous, filenames/match-regex, promise/prefer-await-to-then, no-console */
 
 (() => {
-  const proxyUrl = window.location.protocol + '//pocal.com:80/proxy';
-  const rules = '--insert-rules--';
+  const baseUrl = '//pocal.com:80';
+  // const baseUrl = window.location.protocol + '//pocal.com:80';
+  const proxyUrl = baseUrl + '/proxy';
+  const rulesUrl = baseUrl + '/config/clientUrlReplace';
+
+  let rules = '--insert-rules--';
+
+  const log = (...msg) => console.log('[Pocal]', ...msg);
+
+  fetch(rulesUrl).then(res => res.json()).then(data => {
+    rules = data;
+    log('New rules loaded', rules);
+    return rules;
+  });
 
   document.addEventListener('mousedown', (event) => {
     const leftClick = event.which === 1;
     const middleClick = event.which === 2;
 
-    console.log({click: {leftClick, middleClick}, which: event.which});
+    // console.log({click: {leftClick, middleClick}, which: event.which});
 
     if (!leftClick && !middleClick) {
       return;
     }
 
     // event.preventDefault();
-    const {target} = event;
+    const { target } = event;
     const href = target.getAttribute('data-href-url') || target.href;
 
     if (!href) {
       return;
     }
 
-    console.log({href});
+    if (href.includes('#')) {
+      return;
+    }
+
+    log('Processing link:', { href });
 
     let newHref = href;
 
     rules.forEach((rule) => {
       const source = new RegExp(rule.source);
-
-      newHref = newHref.replace(source, rule.target);
+      const replace = newHref.replace(source, rule.target);
+      if (replace !== newHref) {
+        newHref = replace;
+        log('Replacing link:', { newHref, source, rule });
+      } else {
+        // log('Unused rule:', { source, rule });
+      }
     });
+
+    // log('Final link:', { newHref });
+
     target.href = newHref;
 
     if (target.href === '--proxy--sync--') {
       const request = new XMLHttpRequest();
 
-      console.log({proxyUrl});
+      log({ proxyUrl });
 
       // synchronous
       request.open('POST', proxyUrl, false);
-      request.send(JSON.stringify({href}));
+      request.send(JSON.stringify({ href }));
 
-      console.log({responseText: request.responseText});
+      log({ responseText: request.responseText });
       target.href = request.responseText;
     }
     if (target.href === '--proxy--async--') {
       event.preventDefault();
       const request = new XMLHttpRequest();
 
-      console.log({proxyUrl});
+      log({ proxyUrl });
 
       // asynchronous
       request.open('POST', proxyUrl, true);
-      request.send(JSON.stringify({href}));
+      request.send(JSON.stringify({ href }));
     }
   });
-  console.log('Pocal userscript loaded');
+  // log('Userscript loaded');
 })();
