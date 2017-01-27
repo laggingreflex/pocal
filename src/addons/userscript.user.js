@@ -52,6 +52,7 @@
 
     log('Processing link:', { href });
 
+    const oldHref = href;
     let newHref = href;
 
     rules.forEach((rule) => {
@@ -91,6 +92,10 @@
       request.open('POST', proxyUrl, true);
       request.send(JSON.stringify({ href }));
     }
+
+    setTimeout(() => {
+      target.href = oldHref;
+    })
   }, true);
   // log('Userscript loaded');
 })();
