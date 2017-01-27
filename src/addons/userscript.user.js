@@ -91,6 +91,6 @@
       request.open('POST', proxyUrl, true);
       request.send(JSON.stringify({ href }));
     }
-  });
+  }, true);
   // log('Userscript loaded');
 })();
