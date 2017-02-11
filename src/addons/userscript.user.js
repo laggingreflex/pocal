@@ -28,7 +28,20 @@
     return rules;
   });
 
-  document.addEventListener('mousedown', (event) => {
+  document.addEventListener('mousedown', main);
+  document.addEventListener('mousedown', main, true);
+  // log('Userscript loaded');
+
+  let symbol = 'ATTACHED_BY_POCAL';
+  if (typeof Symbol !== 'undefined') {
+    symbol = Symbol(symbol);
+  }
+
+  function main(event) {
+
+    // if (event[symbol]) return;
+    // event[symbol] = true;
+
     const leftClick = event.which === 1;
     const middleClick = event.which === 2;
 
@@ -95,7 +108,6 @@
 
     setTimeout(() => {
       target.href = oldHref;
-    })
-  }, true);
-  // log('Userscript loaded');
+    }, 200)
+  }
 })();
