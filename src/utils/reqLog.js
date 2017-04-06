@@ -1,15 +1,16 @@
-import logi from 'debug-logi/create';
+import { createLogger } from './log';
 import ms from 'pretty-ms';
 import padLeft from 'pad-left';
 import padRight from 'pad-right';
 import _ from 'lodash';
 import config from '../../config';
 
-const reqLog = logi('req', config);
+const log = createLogger('req');
+
 let reqCounter = 0;
 
 export default async(ctx, next) => {
-  const log = ctx.log = reqLog;
+  ctx.log = log;
 
   const id = padLeft(String(reqCounter++), 5, '0');
   const method = padRight(ctx.method, 4, ' ');

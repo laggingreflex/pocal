@@ -11,16 +11,18 @@ import ms from 'pretty-ms';
 import youtube from 'youtube-dl';
 import linkify from 'linkifyjs/html';
 import sanitizeFilename from 'sanitize-filename';
-import { log } from '../../utils';
+import { createLogger } from '../../utils/log';
 import config from '../../../config';
+
+const log = createLogger('plugin:youtube-dl');
 
 const getVer = () => promisify(::youtube.exec)('--version', [], {}).then(o => o.join(''));
 let ver = getVer();
 const binPath = path.join(path.dirname(require.resolve('youtube-dl/package.json')), 'bin', 'youtube-dl');
 const spawned = spawn(binPath, ['-U'], { encoding: 'utf8' })
 spawned.then(() => ver = ver = getVer());
-spawned.childProcess.stdout.on('data', msg => log('[youtube-dl]', msg.replace(/[\n\r]$/g, '')))
-spawned.childProcess.stderr.on('data', msg => log.err('[youtube-dl error]', msg.replace(/[\n\r]$/g, '')))
+spawned.childProcess.stdout.on('data', msg => log(msg.replace(/[\n\r]$/g, '')))
+spawned.childProcess.stderr.on('data', msg => log.err(msg.replace(/[\n\r]$/g, '')))
 
 export default async(linkArg, ctx) => {
   /*
