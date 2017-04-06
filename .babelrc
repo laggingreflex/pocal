@@ -3,9 +3,12 @@
     "es2015-node6/object-rest",
     "stage-0"
   ],
-  // "plugins": [["annotate-console-log", {"scriptPath": "relative"}]],
-  "sourceMaps": "inline",
+  "plugins": [
+    // ["annotate-console-log", { "scriptPath": "relative" }]
+    // "babel-plugin-transform-es2015-modules-commonjs",
+  ],
+  // "sourceMaps": "inline",
   "env": {
-    "test": { "plugins": [ "rewire" ] }
+    "test": { "plugins": ["rewire"] }
   }
 }
