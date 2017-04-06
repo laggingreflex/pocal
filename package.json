@@ -4,8 +4,9 @@
   "description": "Pocal",
   "main": "dist",
   "bin": "bin.js",
+  "repository": "laggingreflex/pocal",
   "scripts": {
-    "build": "rimraf dist && babel src --out-dir dist --copy-files",
+    "build": "rimraf dist && babel src --out-dir dist --copy-files --source-maps",
     "prepare": "npm run build",
     "prepublish": "npm run prepare",
     "lint": "canonical lint src/**/*.js test/**/*.js",

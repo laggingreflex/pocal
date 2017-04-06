@@ -1,0 +1,41 @@
+# Client URL replacer
+
+Specify a rule to replace the clicked URL into something else.
+
+For eg., change `youtube.com/watch` URL into `youtube.com/tv#` URL (for a better full-screen player):
+
+![(demo gif)](gifs/replacer.gif)
+
+# Keyword search
+
+Specify you own keyword searches.
+
+For eg., searching for `"r whatever"` takes you to reddit search results:
+
+![(demo gif)](gifs/search-keywords.gif)
+
+It also supports regex for advanced replace. Enclose regex in forward-slashes: `/xxx/`
+
+For eg., `'/r ([\w]+) ([\w]+)/'` captures two positional groups which you can replace in: `'reddit.com/r/$1/search?q=$2'` to search in a specific subreddit.
+
+Note: Whichever rule is matched first is executed first, so be sure to place more constrictive rules, like this regex rule, before more general rules, like the simple `'r'` rule as shown above.
+
+# Plugins!
+
+Make your own plugins to do advanced stuff.
+
+In the target column put `'--plugin--<plugin-name>'`.
+
+The `<plugin-name>` is looked for in the following locations:
+```
+../plugins/ (in this module dir)
+~/.pocal/
+~/.pocal/node_modules
+../node_modules/ (in this module dir)
+```
+
+(this feature is currently only for keyword search, but planned for client-url-replacer as well)
+
+It comes pre-loaded with the following plugins:
+
+* [**youtube-dl**](../src/plugins/youtube-dl/README.md)
