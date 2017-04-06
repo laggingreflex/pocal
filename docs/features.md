@@ -20,22 +20,20 @@ For eg., `'/r ([\w]+) ([\w]+)/'` captures two positional groups which you can re
 
 Note: Whichever rule is matched first is executed first, so be sure to place more constrictive rules, like this regex rule, before more general rules, like the simple `'r'` rule as shown above.
 
-# Plugins!
+# Plugins
 
-Make your own plugins to do advanced stuff.
+See [plugins](../src/plugins/)
 
-In the target column put `'--plugin--<plugin-name>'`.
+Extend functionality by making your own plugins to do advanced stuff.
 
-The `<plugin-name>` is looked for in the following locations:
-```
-../plugins/ (in this module dir)
-~/.pocal/
-~/.pocal/node_modules
-../node_modules/ (in this module dir)
-```
-
-(this feature is currently only for keyword search, but planned for client-url-replacer as well)
-
-It comes pre-loaded with the following plugins:
+Comes pre-loaded with the following plugins:
 
 * [**youtube-dl**](../src/plugins/youtube-dl/README.md)
+
+  A `youtube-dl` plugin, which uses [youtube-dl] to download ([most][sites]) videos.
+
+  ![(demo gif)](./gifs/ytd.gif)
+
+
+[youtube-dl]: http://rg3.github.io/youtube-dl
+[sites]: http://rg3.github.io/youtube-dl/supportedsites.html

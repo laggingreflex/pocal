@@ -1,6 +1,6 @@
 {
   "ip": "0.0.0.0",
-  "port": 5000,
+  "port": 6000,
   "https": false,
   "plugins": ["youtube-dl"],
   "youtubeDownloadsDir": "~/videos/downloads",
