@@ -21,6 +21,7 @@
   let rules = '--insert-rules--';
 
   const log = (...msg) => console.log('[Pocal]', ...msg);
+  log.err = (...msg) => console.error('[Pocal error]', ...msg);
 
   fetch(rulesUrl).then(res => res.json()).then(data => {
     rules = data;
@@ -29,7 +30,7 @@
   });
 
   document.addEventListener('mousedown', main);
-  document.addEventListener('mousedown', main, true);
+  document.addEventListener('mousedown', () => main(), true);
   // log('Userscript loaded');
 
   let symbol = 'ATTACHED_BY_POCAL';
@@ -38,6 +39,11 @@
   }
 
   function main(event) {
+
+    if (!event) {
+      log.err('`event` object not found')
+      return
+    }
 
     // if (event[symbol]) return;
     // event[symbol] = true;
