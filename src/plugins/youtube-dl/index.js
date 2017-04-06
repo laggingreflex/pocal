@@ -1,4 +1,5 @@
 import path from 'path';
+import { spawn } from 'child_process';
 import _ from 'lodash';
 import request from 'request';
 import progress from 'request-progress';
@@ -12,7 +13,11 @@ import linkify from 'linkifyjs/html';
 import sanitizeFilename from 'sanitize-filename';
 import config from '../../config';
 
-const ver = promisify(::youtube.exec)('--version', [], {}).then(o => o.join(''));
+const getVer = () => promisify(::youtube.exec)('--version', [], {}).then(o => o.join(''));
+let ver = getVer();
+
+spawn(path.join(require.resolve('youtube'), 'bin', 'youtube-dl.exe'), ['-U'], { stdio: 'inherit' })
+  .on('exit', () => ver = ver = getVer());
 
 export default async(linkArg, ctx) => {
   /*
