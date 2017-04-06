@@ -1,5 +1,5 @@
 import path from 'path';
-import { spawn } from 'child_process';
+import spawn from 'cross-spawn-promise';
 import _ from 'lodash';
 import request from 'request';
 import progress from 'request-progress';
@@ -11,13 +11,16 @@ import ms from 'pretty-ms';
 import youtube from 'youtube-dl';
 import linkify from 'linkifyjs/html';
 import sanitizeFilename from 'sanitize-filename';
+import { log } from '../../utils';
 import config from '../../config';
 
 const getVer = () => promisify(::youtube.exec)('--version', [], {}).then(o => o.join(''));
 let ver = getVer();
-
-spawn(path.join(require.resolve('youtube'), 'bin', 'youtube-dl.exe'), ['-U'], { stdio: 'inherit' })
-  .on('exit', () => ver = ver = getVer());
+const binPath = path.join(path.dirname(require.resolve('youtube-dl/package.json')), 'bin', 'youtube-dl');
+const spawned = spawn(binPath, ['-U'], { encoding: 'utf8' })
+spawned.then(() => ver = ver = getVer());
+spawned.childProcess.stdout.on('data', msg => log('[youtube-dl]', msg.replace(/[\n\r]$/g, '')))
+spawned.childProcess.stderr.on('data', msg => log.err('[youtube-dl error]', msg.replace(/[\n\r]$/g, '')))
 
 export default async(linkArg, ctx) => {
   /*
