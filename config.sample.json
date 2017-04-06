@@ -1,43 +1,42 @@
 {
-  "clientUrlReplace": [
-    {
-      "//comment": "Replace regular youtube links in to Youtube TV links",
-      "source": "youtube\\.com.*v=([a-zA-Z0-9-_]+)",
-      "target": "youtube.com/tv#/watch?v=$1"
-    }, {
-      "source": "youtu\\.be\\/([a-zA-Z0-9-_]+)",
-      "target": "youtube.com/tv#/watch?v=$1"
-    }, {
-      "source": "youtube.com/tv#/watch\\?v=(.*)\\?(.*)",
-      "target": "youtube.com/tv#/watch?v=$1&$2"
-    }, {
-      "//comment": "Replace youtube user channel with their videos page sorted by popular",
-      "source": "(youtube.com/user/.*)/?$",
-      "target": "$1/videos?sort=p"
-    }
-  ],
-  "keywords": [
-    {
-      "keyword": "g",
-      "target": "http://google.com/search?btnI&q={searchTerms}"
-    }, {
-      "keyword": "js",
-      "target": "http://google.com/search?q={searchTerms}+(javascript+OR+nodejs)"
-    }, {
-      "keyword": "r",
-      "target": "http://reddit.com/search?sort=comments&t=all&q={searchTerms}"
-    }, {
-      "keyword": "/r ([\\w]+) ([\\w]+)/",
-      "target": "http://reddit.com/r/$1/search?restrict_sr=on&sort=comments&t=all&q=$2"
-    }, {
-      "keyword": "ru",
-      "target": "http://reddit.com/search?sort=comments&t=all&q=url:{searchTerms}"
-    }, {
-      "keyword": "wa",
-      "target": "http://web.archive.org/web/{searchTerms}"
-    }, {
-      "keyword": "ytd",
-      "target": "--plugin--youtube-dl"
-    }
-  ]
+  "port": 50000,
+  "plugins": ["youtube-dl"],
+  "youtubeDownloadsDir": "~/videos/downloads",
+  "clientUrlReplace": [{
+    "//comment": "Replace regular youtube links in to Youtube TV links",
+    "source": "youtube\\.com.*v=([a-zA-Z0-9-_]+)",
+    "target": "youtube.com/tv#/watch?v=$1"
+  }, {
+    "source": "youtu\\.be\\/([a-zA-Z0-9-_]+)",
+    "target": "youtube.com/tv#/watch?v=$1"
+  }, {
+    "source": "youtube.com/tv#/watch\\?v=(.*)\\?(.*)",
+    "target": "youtube.com/tv#/watch?v=$1&$2"
+  }, {
+    "//comment": "Replace youtube user channel with their videos page sorted by popular",
+    "source": "(youtube.com/user/.*)/?$",
+    "target": "$1/videos?sort=p"
+  }],
+  "keywords": [{
+    "keyword": "g",
+    "target": "http://google.com/search?btnI&q={searchTerms}"
+  }, {
+    "keyword": "js",
+    "target": "http://google.com/search?q={searchTerms}+(javascript+OR+nodejs)"
+  }, {
+    "keyword": "r",
+    "target": "http://reddit.com/search?sort=comments&t=all&q={searchTerms}"
+  }, {
+    "keyword": "/r ([\\w]+) ([\\w]+)/",
+    "target": "http://reddit.com/r/$1/search?restrict_sr=on&sort=comments&t=all&q=$2"
+  }, {
+    "keyword": "ru",
+    "target": "http://reddit.com/search?sort=comments&t=all&q=url:{searchTerms}"
+  }, {
+    "keyword": "wa",
+    "target": "http://web.archive.org/web/{searchTerms}"
+  }, {
+    "keyword": "ytd",
+    "target": "--plugin--youtube-dl"
+  }]
 }

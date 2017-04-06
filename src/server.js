@@ -3,7 +3,7 @@ import Koa from 'koa';
 import portscanner from 'portscanner';
 import body from 'koa-body';
 import pem from 'pem-promise';
-import config from './config';
+import config from './../config';
 import { log, reqLog, getHostString } from './utils';
 import * as routes from './routes'; // eslint-disable-line
 

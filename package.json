@@ -21,7 +21,7 @@
     "bunyan": "^1.8.8",
     "child-process-es6-promise": "^1.1.0",
     "client-request": "^1.2.0",
-    "configucius": "^0.3.0",
+    "configucius": "^0.4.0",
     "cross-spawn-promise": "^0.10.1",
     "debug-logi": "^0.1.0",
     "enquirer": "^0.4.1",

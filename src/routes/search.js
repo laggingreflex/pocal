@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import render from '../views';
-import config from '../config';
+import config from '../../config';
 import { log, loadPlugins } from '../utils';
 
 const router = new Router();

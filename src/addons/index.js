@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-promise';
-import config from '../config';
+import config from '../../config';
 import {getListeningHost} from '../server';
 
 export default async(filename) => {

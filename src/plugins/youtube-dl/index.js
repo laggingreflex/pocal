@@ -12,7 +12,7 @@ import youtube from 'youtube-dl';
 import linkify from 'linkifyjs/html';
 import sanitizeFilename from 'sanitize-filename';
 import { log } from '../../utils';
-import config from '../../config';
+import config from '../../../config';
 
 const getVer = () => promisify(::youtube.exec)('--version', [], {}).then(o => o.join(''));
 let ver = getVer();

@@ -1,24 +1,25 @@
-import Config from 'configucius';
+var Config = require('configucius').default;
+var sample = require('./config.sample.json');
 
-const config = new Config({
+const config = module.exports = new Config({
   configFile: '~/.pocal',
   options: {
     clientUrlReplace: {
-      default: [],
+      default: sample.clientUrlReplace,
       save: true,
     },
     keywords: {
-      default: [],
+      default: sample.keywords,
       save: true,
     },
     plugins: {
       type: 'array',
-      default: ['youtube-dl'],
+      default: sample.keywords,
       save: true,
     },
     youtubeDownloadsDir: {
       type: 'string',
-      default: '~/videos/downloads',
+      default: sample.youtubeDownloadsDir,
       save: true,
     },
     host: {
@@ -27,6 +28,7 @@ const config = new Config({
     },
     port: {
       type: 'number',
+      default: sample.port,
       save: true,
     },
     ip: {
@@ -45,5 +47,3 @@ const config = new Config({
   duplicateArgumentsArray: false,
   mergeDefaults: true,
 });
-
-export default config;

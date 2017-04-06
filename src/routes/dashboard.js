@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import _ from 'lodash';
 import render from '../views';
-import config from '../config';
+import config from '../../config';
 
 const router = new Router();
 

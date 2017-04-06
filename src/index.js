@@ -1,19 +1,20 @@
 import 'source-map-support/register'; // eslint-disable-line import/no-unassigned-import
-import createServer from './server';
-import config from './config';
-import { loadPlugins } from './utils';
+import config from '../config';
+import { log } from './utils';
 
 const main = async() => {
-  if (config.get('editConfig')) {
-    await config.prompt();
+  if (config.editConfig) {
+    await config.prompt(['port', 'youtubeDownloadsDir']);
     config.save();
+    console.log(`For advanced setting goto http://localhost:${config.port}`);
     // console.log('Config saved');
     return;
   }
 
+  const { loadPlugins } = require('./utils');
   loadPlugins(config.get('plugins'));
-
+  const createServer = require('./server').default;
   createServer();
 };
 
-main();
+main().catch(::log.err);

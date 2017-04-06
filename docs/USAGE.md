@@ -38,7 +38,7 @@ r                         http://reddit.com/search?q={searchTerms}
 ```
 this will only match the second rule if it doesn't find two capture groups. So "r webdev something" matches first whereas "r something" doesn't and so it matches the second.
 
-The rules I personally use (as of writing this) are (in [config.sample.json](../config.sample.json)):
+The rules I personally use (as of writing this) are (in [config.sample.json](../../config.sample.json)):
 
 ```
 g                         http://google.com/search?btnI&q={searchTerms}
@@ -73,4 +73,4 @@ It modifies all plain `youtube` links into `youtube/tv#` links which IMO has a m
 
 # Config
 
-Config is stored in `~/.pocal` (`C:\Users\<you>\.pocal` in Windows) as plain JSON. You can use (copy-paste) [config.sample.json](../config.sample.json) to import most above mentioned rules.
+Config is stored in `~/.pocal` (`C:\Users\<you>\.pocal` in Windows) as plain JSON. You can use (copy-paste) [config.sample.json](../../config.sample.json) to import most above mentioned rules.

@@ -3,7 +3,7 @@ import ms from 'pretty-ms';
 import padLeft from 'pad-left';
 import padRight from 'pad-right';
 import _ from 'lodash';
-import config from '../config';
+import config from '../../config';
 
 const reqLog = logi('req', config);
 let reqCounter = 0;
