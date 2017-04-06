@@ -20,7 +20,7 @@ const getVer = () => promisify(::youtube.exec)('--version', [], {}).then(o => o.
 let ver = getVer();
 const binPath = path.join(path.dirname(require.resolve('youtube-dl/package.json')), 'bin', 'youtube-dl');
 const spawned = spawn(binPath, ['-U'], { encoding: 'utf8' })
-spawned.then(() => ver = ver = getVer());
+spawned.then(() => ver = getVer());
 spawned.childProcess.stdout.on('data', msg => log(msg.replace(/[\n\r]$/g, '')))
 spawned.childProcess.stderr.on('data', msg => log.err(msg.replace(/[\n\r]$/g, '')))
 
