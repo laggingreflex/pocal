@@ -7,15 +7,18 @@ const config = module.exports = new Config({
     clientUrlReplace: {
       default: sample.clientUrlReplace,
       save: true,
+      prompt: false,
     },
     keywords: {
       default: sample.keywords,
       save: true,
+      prompt: false,
     },
     plugins: {
       type: 'array',
       default: sample.plugins,
       save: true,
+      prompt: false,
     },
     youtubeDownloadsDir: {
       type: 'string',

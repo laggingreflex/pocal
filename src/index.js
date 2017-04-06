@@ -4,7 +4,8 @@ import { log } from './utils';
 
 const main = async() => {
   if (config.editConfig) {
-    await config.prompt(['port', 'youtubeDownloadsDir']);
+    await config.prompt(['port', 'ip', 'youtubeDownloadsDir']);
+    await config.prompt();
     config.save();
     console.log(`For advanced setting goto http://localhost:${config.port}`);
     // console.log('Config saved');

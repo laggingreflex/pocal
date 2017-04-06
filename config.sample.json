@@ -1,5 +1,7 @@
 {
-  "port": 50000,
+  "ip": "0.0.0.0",
+  "port": 5000,
+  "https": false,
   "plugins": ["youtube-dl"],
   "youtubeDownloadsDir": "~/videos/downloads",
   "clientUrlReplace": [{

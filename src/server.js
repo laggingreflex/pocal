@@ -1,4 +1,5 @@
-import https from 'httpolyglot';
+import http from 'http';
+import https from 'https';
 import Koa from 'koa';
 import portscanner from 'portscanner';
 import body from 'koa-body';
@@ -19,8 +20,8 @@ for (const [, route] of Object.entries(routes)) {
   app.use(route);
 }
 
-const defaultIp = config.ip || '127.0.0.1';
-const defaultPort = config.port || 6000;
+const defaultIp = config.ip || '0.0.0.0';
+const defaultPort = config.port || 5000;
 
 const listeningHost = {};
 
@@ -47,27 +48,27 @@ export default async({
 
     config.sslKey = serviceKey;
     config.sslCert = certificate;
-    await config.save();
+    await config.save(['sslKey', 'sslCert']);
   }
 
-  https.createServer({
-    cert: config.sslCert,
-    key: config.sslKey
-  }, app.callback()).listen(port, ip, () => {
+  http.createServer(app.callback()).listen(...[port, ip, () => {
     if (!silent) {
       log('Listening on', getHostString(port, ip));
     }
     listeningHost.ip = ip;
     listeningHost.port = port;
-  });
-  https.createServer({
-    cert: config.sslCert,
-    key: config.sslKey
-  }, app.callback()).listen(443, ip, () => {
-    if (!silent) {
-      log('Listening on', getHostString(443, ip));
-    }
-  });
+  }].filter(Boolean));
+
+  if (config.https) {
+    https.createServer({
+      cert: config.sslCert,
+      key: config.sslKey
+    }, app.callback()).listen(...[443, ip, () => {
+      if (!silent) {
+        log('Listening on', getHostString(443, ip));
+      }
+    }].filter(Boolean));
+  }
 };
 
 export const getListeningHost = () => {
