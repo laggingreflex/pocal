@@ -14,7 +14,7 @@ const config = module.exports = new Config({
     },
     plugins: {
       type: 'array',
-      default: sample.keywords,
+      default: sample.plugins,
       save: true,
     },
     youtubeDownloadsDir: {
