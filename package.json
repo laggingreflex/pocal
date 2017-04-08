@@ -8,7 +8,7 @@
   "scripts": {
     "build": "rimraf dist && babel src --out-dir dist --copy-files --source-maps",
     "prepare": "npm run build",
-    "prepublish": "npm run prepare",
+    "prepublish": "npm run build",
     "lint": "canonical lint src/**/*.js test/**/*.js",
     "test": "NODE_ENV=test mochista",
     "watch": "run-p \"build -- {@}\" \"test -- {@}\" -- \"--watch\"",
