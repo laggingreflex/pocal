@@ -12,8 +12,7 @@
     "lint": "canonical lint src/**/*.js test/**/*.js",
     "test": "NODE_ENV=test mochista",
     "watch": "run-p \"build -- {@}\" \"test -- {@}\" -- \"--watch\"",
-    "index": "create-index src -ri --banner \"/* eslint-disable */\"",
-    "start": "node index.js"
+    "index": "create-index src -ri --banner \"/* eslint-disable */\""
   },
   "dependencies": {
     "arrify": "^1.0.1",
